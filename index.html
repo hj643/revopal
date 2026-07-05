@@ -254,8 +254,6 @@
       pointer-events: none;
       z-index: 1;
     }
-
-    /* 臾대뱶?명듃 ?대?吏 ?곸뿭 */
     .note-window {
      position: absolute;
       top: var(--note-top);
@@ -267,8 +265,7 @@
       border-radius: 20px;
      pointer-events: none;
     }
-
-    /* ?ㅼ젣 臾대뱶?명듃 */
+    
     .moodnote-img {
       width: 100%;
      height: 100%;
@@ -277,7 +274,6 @@
       mix-blend-mode: multiply;
     }
 
-    /* ?섏뼱媛??醫낆씠 */
     .turn-sheet {
       position: absolute;
       top: var(--note-top);
@@ -653,7 +649,7 @@
 
                 <figure class="sketch-frame">
                   <img id="sketchImage" src="assets/sketchbook/sketch-01.png" alt="" />
-                  <figcaption id="sketchCaption">?ㅻ챸湲 01</figcaption>
+                  <figcaption id="sketchCaption">설명01</figcaption>
                 </figure>
 
                 <button class="sketch-btn sketch-next" data-dir="1" aria-label="next sketch">&rsaquo;</button>
@@ -830,17 +826,18 @@ window.addEventListener("pointermove", (event) => {
     }
     animateUnicorns();
 
-    // ?ㅼ?移섎턿 媛ㅻ윭由?  const sketches = [
-      { src: "assets/sketchbook/sketch-01.png", caption: "?쇰씪" },
-      { src: "assets/sketchbook/sketch-02.png", caption: "?꾨씪" },
-      { src: "assets/sketchbook/sketch-03.png", caption: "?ㅻ챸湲 03" },
-      { src: "assets/sketchbook/sketch-04.png", caption: "?ㅻ챸湲 04" },
-      { src: "assets/sketchbook/sketch-05.png", caption: "?ㅻ챸湲 05" },
-      { src: "assets/sketchbook/sketch-06.png", caption: "?ㅻ챸湲 06" },
-      { src: "assets/sketchbook/sketch-07.png", caption: "?ㅻ챸湲 07" },
-      { src: "assets/sketchbook/sketch-08.png", caption: "?ㅻ챸湲 08" },
-      { src: "assets/sketchbook/sketch-09.png", caption: "?ㅻ챸湲 09" },
-      { src: "assets/sketchbook/sketch-10.png", caption: "?ㅻ챸湲 10" }
+
+    const sketches = [
+      { src: "assets/sketchbook/sketch-01.png", caption: "01" },
+      { src: "assets/sketchbook/sketch-02.png", caption: "02" },
+      { src: "assets/sketchbook/sketch-03.png", caption: "03" },
+      { src: "assets/sketchbook/sketch-04.png", caption: "04" },
+      { src: "assets/sketchbook/sketch-05.png", caption: "05" },
+      { src: "assets/sketchbook/sketch-06.png", caption: "06" },
+      { src: "assets/sketchbook/sketch-07.png", caption: "07" },
+      { src: "assets/sketchbook/sketch-08.png", caption: "08" },
+      { src: "assets/sketchbook/sketch-09.png", caption: "09" },
+      { src: "assets/sketchbook/sketch-10.png", caption: "10" }
     ];
 
   let sketchIndex = 0;
@@ -861,7 +858,8 @@ window.addEventListener("pointermove", (event) => {
 
   renderSketch();
 
-  // 臾대뱶?명듃 媛ㅻ윭由?    const moodNotes = [
+
+    const moodNotes = [
      "assets/mood/moodnote-01.jpg",
      "assets/mood/moodnote-02.jpg",
       "assets/mood/moodnote-03.jpg",
