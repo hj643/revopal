@@ -1,0 +1,1084 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rev.opal</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    } 
+
+    html {
+      scroll-behavior: smooth; 
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: etica, Arial, sans-serifHelv;
+      color: #111;
+      background: #f3eee3 url("assets/backgrounds/wallpaper2.png") center / cover fixed;
+      overflow-x: hidden;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.08;
+      background-image: radial-gradient(rgba(0,0,0,0.55) 0.6px, transparent 0.6px);
+      background-size: 3px 3px;
+      z-index: 999;
+    }
+
+    button {
+      font: inherit;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+    }
+
+    .section {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 01. landing */
+    .landing {
+      display: grid;
+      place-items: center;
+    }
+
+    .logo {
+      position: relative;
+      z-index: 20;
+      font-size: clamp(44px, 7vw, 112px);
+      line-height: 1;
+      font-weight: 400;
+      letter-spacing: -0.07em;
+      color: rgba(20, 20, 20, 0.86);
+      user-select: none;
+    }
+
+    .unicorn-field {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 5;
+    }
+
+    .unicorn {
+      position: absolute;
+      width: calc(var(--w) * 3);
+      left: var(--x);
+      top: var(--y);
+      opacity: var(--o);
+      transform: translate3d(0, 0, 0) rotate(var(--r));
+      transform-origin: center;
+      will-change: transform;
+      user-select: none;
+      pointer-events: none;
+      filter: drop-shadow(0 10px 13px rgba(50, 42, 35, 0.10));
+    }
+
+    .cursor-unicorn {
+      display: none;
+    }
+
+    @media (pointer: fine) {
+      .landing:hover .cursor-unicorn {
+        opacity: 0.8;
+      }
+    }
+
+    /* 02. contents */
+    .contents {
+      display: grid;
+      place-items: center;
+      padding: 8vh 6vw;
+    }
+
+    .contents-grid {
+      width: min(900px, 86vw);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 48px;
+      align-items: center;
+    }
+
+    .contents-link {
+      display: grid;
+      place-items: center;
+      text-decoration: none;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .contents-link:hover {
+      transform: translateY(-8px);
+      filter: drop-shadow(0 16px 18px rgba(54, 45, 34, 0.18));
+    }
+
+    .contents-link img {
+      width: min(100%, 330px);
+      height: auto;
+      display: block;
+    }
+
+    .contents-label {
+      margin-top: 12px;
+      font-size: clamp(16px, 1.2vw, 22px);
+      color: rgba(30, 27, 25, 0.78);
+      text-align: center;
+    }
+
+    /* 03. sketchbook */
+    .sketchbook {
+      padding: 7vh 5vw;
+      align-items: center;
+    }
+
+    .sketchbook-layout {
+      width: min(1180px, 92vw);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.75fr);
+      gap: 42px;
+      align-items: center;
+    }
+
+    .reel-area {
+      display: grid;
+      gap: 18px;
+    }
+
+    .reel-link {
+      justify-self: start;
+      color: rgba(30, 27, 25, 0.78);
+      font-size: 18px;
+      text-decoration: underline;
+    }
+
+    .sketch-gallery {
+      position: relative;
+       width: min(100%, 680px);
+      height: min(68vh, 620px); 
+      display: grid;
+      place-items: center;
+      justify-self: center;
+    }
+
+    .sketch-frame {
+      width: 100%;
+     height: 100%;
+      place-items: center;
+      display: grid;
+    }
+
+    .sketch-frame img {
+      width: 100%;
+      height: 100%;
+      max-height: 68vh;
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 18px 24px rgba(54, 45, 34, 0.16));
+    }
+
+    .sketch-frame figcaption {
+      min-height: 42px;
+      font-size: 15px;
+      line-height: 1.45;
+      color: rgba(30, 27, 25, 0.76);
+      text-align: center;
+    }
+
+    .sketch-btn {
+      position: absolute;
+      top: 50%;
+      translate: 0 -50%;
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(54, 49, 43, 0.36);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.24);
+      font-size: 24px;
+      color: rgba(30, 27, 25, 0.7);
+      z-index: 5;
+    }
+
+    .sketch-prev {
+      left: 0;
+    }
+
+    .sketch-next {
+      right: 0;
+    }
+    /* 04. mood book */
+    .mood {
+      display: grid;
+      place-items: center;
+      padding: 6vh 4vw;
+    }
+
+    .book-wrap {
+      position: relative;
+      width: min(92vw, 1060px);
+      display: grid;
+      place-items: center;
+    }
+
+    .book-stage {
+      position: relative;
+      width: min(84vw, 980px);
+      aspect-ratio: 1179 / 833;
+      display: grid;
+      place-items: center;
+      perspective: 1600px;
+
+      --note-top: 12%;
+      --note-side: 9%;
+      --note-bottom: 12%;
+    }
+
+    .notebook {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 26px 36px rgba(48, 42, 32, 0.23));
+      user-select: none;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* 臾대뱶?명듃 ?대?吏 ?곸뿭 */
+    .note-window {
+     position: absolute;
+      top: var(--note-top);
+      right: var(--note-side);
+      bottom: var(--note-bottom);
+      left: var(--note-side);
+      z-index: 2;
+      overflow: hidden;
+      border-radius: 20px;
+     pointer-events: none;
+    }
+
+    /* ?ㅼ젣 臾대뱶?명듃 */
+    .moodnote-img {
+      width: 100%;
+     height: 100%;
+      object-fit: fill;
+      opacity: 0.95;
+      mix-blend-mode: multiply;
+    }
+
+    /* ?섏뼱媛??醫낆씠 */
+    .turn-sheet {
+      position: absolute;
+      top: var(--note-top);
+      right: var(--note-side);
+      width: calc((100% - (var(--note-side) * 2)) / 2);
+      height: calc(100% - var(--note-top) - var(--note-bottom));
+     z-index: 4;
+      opacity: 0;
+      pointer-events: none;
+
+      background-image: var(--turn-image);
+      background-size: 200% 100%;
+      background-position: right center;
+      background-repeat: no-repeat;
+
+      transform-origin: left center;
+      backface-visibility: hidden;
+    }
+
+    .book-stage.turn-next .turn-sheet {
+     animation: turnNext 0.75s ease-in-out forwards;
+    }
+
+    @keyframes turnNext {
+      0% {
+        opacity: 1;
+        transform: rotateY(0deg);
+      }
+
+      50% {
+       opacity: 1;
+       transform: rotateY(-85deg);
+     }
+
+     100% {
+       opacity: 0;
+        transform: rotateY(-175deg);
+      }
+    }
+
+    .book-btn {
+      position: absolute;
+      top: 50%;
+      translate: 0 -50%;
+      width: 46px;
+      height: 46px;
+      border: 1px solid rgba(54, 49, 43, 0.42);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.28);
+      color: rgba(30, 27, 25, 0.78);
+      font-size: 24px;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+      z-index: 10;
+      cursor: pointer;
+    }
+
+    .book-btn:hover {
+      background: rgba(255, 255, 255, 0.48);
+    }
+
+    .book-prev { left: max(18px, calc(50% - 560px)); }
+    .book-next { right: max(18px, calc(50% - 560px)); }
+
+    /* 03-04. editorial frames */
+    .frame-section {
+      display: grid;
+      place-items: center;
+      padding: 7vh 5vw;
+    }
+
+    .carousel-shell {
+      position: relative;
+      width: min(88vw, 1160px);
+      height: min(68vh, 670px);
+      display: grid;
+      place-items: center;
+    }
+
+    .editorial-frame {
+      position: absolute;
+      border: 1px solid rgba(45, 40, 34, 0.45);
+      background: rgba(255, 255, 255, 0.16);
+      box-shadow: 0 20px 36px rgba(70, 58, 44, 0.12);
+      overflow: hidden;
+    }
+
+    .editorial-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .editorial-frame.has-image img {
+      display: block;
+    }
+
+    .editorial-main {
+      width: min(58vw, 720px);
+      height: min(58vh, 560px);
+      z-index: 4;
+    }
+
+    .editorial-side {
+      width: min(22vw, 260px);
+      height: min(42vh, 420px);
+      opacity: 0.72;
+      z-index: 3;
+    }
+
+    .editorial-left {
+      left: 0;
+      transform: perspective(900px) rotateY(28deg);
+    }
+
+    .editorial-right {
+      right: 0;
+      transform: perspective(900px) rotateY(-28deg);
+    }
+
+    .slide-btn {
+      position: absolute;
+      top: 50%;
+      translate: 0 -50%;
+      width: 46px;
+      height: 46px;
+      border: 1px solid rgba(54, 49, 43, 0.36);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.22);
+      font-size: 24px;
+      color: rgba(30, 27, 25, 0.7);
+      z-index: 8;
+    }
+
+    .slide-btn:hover {
+      background: rgba(255, 255, 255, 0.46);
+    }
+
+    .slide-prev { left: 2vw; }
+    .slide-next { right: 2vw; }
+
+    /* 05. lookbook */
+    .lookbook {
+      min-height: 100vh;
+      padding: 6vh 5vw;
+      display: grid;
+      align-items: center;
+    }
+
+    .lookbook-grid {
+      position: relative;
+      width: min(1180px, 92vw);
+      min-height: 72vh;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 0.8fr 1.25fr 0.9fr;
+      gap: 34px;
+      align-items: center;
+    }
+
+    .memo-area {        
+      position: relative;
+      align-self: start;
+      justify-self: start;
+      width: min(28vw, 320px);
+    }
+
+    .outfit-memo-text {
+      position: absolute;
+      top: 18%;
+      left: 14%;
+      right: 14%;
+      font-size: 15px;
+      line-height: 1.5;
+      color: rgba(30, 27, 25, 0.78);
+    }
+
+    .memo-area img {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 18px 24px rgba(54, 45, 34, 0.18));
+    }
+
+    .outfit-area {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      display: grid;
+      place-items: center;
+    }
+
+    .outfit-area video {
+      max-width: 100%;
+      max-height: 72vh;
+      object-fit: contain;
+      display: block;
+      transition: transform 0.35s ease, filter 0.35s ease;
+    }
+
+    .item-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(86px, 1fr));
+      gap: 24px 18px;
+      justify-self: stretch;
+    }
+
+    .item-box {
+      display: grid;
+      place-items: center;
+      gap: 10px;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      overflow: visible;
+      cursor: pointer;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .item-box:hover {
+      transform: translateY(-6px);
+      filter: drop-shadow(0 16px 18px rgba(54, 45, 34, 0.18));
+    }
+
+    .item-box.is-active {
+      transform: translateY(-4px);
+      filter: drop-shadow(0 18px 20px rgba(54, 45, 34, 0.22));
+    }
+
+    .item-box img {
+      width: min(100%, 130px);
+      height: 130px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .item-label {
+      font-size: 15px;
+      line-height: 1.3;
+      color: rgba(30, 27, 25, 0.78);
+      text-align: center;
+    }
+
+    @media (max-width: 820px) {
+      body {
+        background-attachment: scroll;
+      }
+
+      .unicorn {
+        width: calc(var(--w) * 0.7);
+      }
+
+      .cursor-unicorn {
+        display: none;
+      }
+
+      .book-stage {
+        width: 96vw;
+      }
+
+      .book-btn,
+      .slide-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+
+      .editorial-main {
+        width: 68vw;
+        height: 52vh;
+      }
+
+      .editorial-side {
+        width: 20vw;
+        height: 34vh;
+      }
+
+      .lookbook-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .memo-area {
+        width: 180px;
+      }
+
+      .outfit-area {
+        width: min(72vw, 360px);
+        justify-self: center;
+      }
+      .item-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    .section.page-section {
+      display: none;
+    }
+
+    .section.page-section.is-active {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: grid;
+      width: 100%;
+      height: 100vh;
+      min-height: 100vh;
+      overflow: auto;
+      background: #f3eee3 url("assets/backgrounds/wallpaper1.png") center / cover fixed;
+    }  
+
+    .back-to-contents {
+        position: absolute;
+        top: 28px;
+        right: 32px;
+        z-index: 30;
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        text-decoration: none;
+        color: rgba(30, 27, 25, 0.78);
+        font-size: 34px;
+        line-height: 1;
+        background: rgba(255, 255, 255, 0.24);
+        border: 1px solid rgba(54, 49, 43, 0.34);
+        border-radius: 999px;
+      }
+
+     .back-to-contents:hover {
+        background: rgba(255, 255, 255, 0.48);
+      }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="section landing" id="landing">
+      <div class="unicorn-field" id="unicornField" aria-hidden="true"></div>
+      <h1 class="logo">rev.opal</h1>
+
+    </section>
+
+    <section class="section contents" id="contents">
+      <nav class="contents-grid">
+
+        <a class="contents-link" href="#sketchbook">
+          <img src="assets/icons/sketchbook-icon.png" alt="sketchbook" />
+          <span class="contents-label">sketchbook</span>
+        </a>
+
+        <a class="contents-link" href="#mood">
+          <img src="assets/icons/mood-icon.png" alt="moodboard" />
+          <span class="contents-label">moodboard</span>
+        </a>
+
+        <a class="contents-link" href="#photos">
+          <img src="assets/icons/photo-icon.png" alt="photo book" />
+          <span class="contents-label">photo book</span>
+        </a>
+
+        <a class="contents-link" href="#lookbook">
+          <img src="assets/icons/lookbook-icon.png" alt="lookbook" />
+          <span class="contents-label">lookbook</span>
+        </a>
+
+      </nav>
+    </section>
+
+    <section class="section sketchbook page-section" id="sketchbook">
+      <a class="back-to-contents" href="#contents">×</a>
+      <div class="sketch-gallery">
+                <button class="sketch-btn sketch-prev" data-dir="-1" aria-label="previous sketch">&rsaquo;</button>
+
+                <figure class="sketch-frame">
+                  <img id="sketchImage" src="assets/sketchbook/sketch-01.png" alt="" />
+                  <figcaption id="sketchCaption">?ㅻ챸湲 01</figcaption>
+                </figure>
+
+                <button class="sketch-btn sketch-next" data-dir="1" aria-label="next sketch">&rsaquo;</button>
+              </div>
+            </div>
+
+      <div class="sketchbook-layout">
+        <div class="reel-area">
+          <a
+            class="reel-link"
+            href="https://www.instagram.com/reel/DZuD3rKy4gA/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            view on instagram
+          </a>
+        </div>
+    </section>
+
+    <section class="section mood page-section" id="mood">
+      <a class="back-to-contents" href="#contents">×</a>
+      <div class="book-wrap">
+          <button class="book-btn book-prev" id="moodPrev" aria-label="previous mood page">&rsaquo;</button>
+      
+          <div class="book-stage" id="bookStage">
+           <img class="notebook" src="assets/mood/notebook.png" alt="" />
+        
+           <div class="note-window">
+             <img class="moodnote-img" id="moodnoteImage" src="assets/mood/moodnote-01.jpg" alt="" />
+          </div>
+       
+          <div class="turn-sheet" id="turnSheet"></div>
+        </div>
+
+        <button class="book-btn book-next" id="moodNext" aria-label="next mood page">&rsaquo;</button>
+      </div>
+    </section>
+
+    <section class="section frame-section page-section" id="photos">
+      <a class="back-to-contents" href="#contents">×</a>
+      <button class="slide-btn slide-prev" data-gallery="photos" data-dir="-1" aria-label="previous photo">&rsaquo;</button>
+      <div class="carousel-shell">
+        <div class="editorial-frame editorial-side editorial-left" id="photosPrevFrame"><img alt="" /></div>
+        <div class="editorial-frame editorial-main" id="photosMainFrame"><img alt="" /></div>
+        <div class="editorial-frame editorial-side editorial-right" id="photosNextFrame"><img alt="" /></div>
+      </div>
+      <button class="slide-btn slide-next" data-gallery="photos" data-dir="1" aria-label="next photo">&rsaquo;</button>
+    </section>
+
+    <section class="section lookbook page-section" id="lookbook">
+      <a class="back-to-contents" href="#contents">×</a>
+      <div class="lookbook-grid">
+        <div class="memo-area">
+          <img src="assets/lookbook/memo/memopad.png" alt="" />
+          <p id="outfitMemo" class="outfit-memo-text">look 01</p>
+        </div>
+        
+        <div class="outfit-area"><img id="outfitImage" src="assets/lookbook/items/item-01.png" alt="" /></div>
+
+        <div class="item-grid" id="itemGrid">
+           <button class="item-box is-active" data-outfit="0">
+              <img src="assets/lookbook/items/item-01.png" alt="" />
+               <span class="item-label">look 01</span>
+            </button>
+
+            <button class="item-box" data-outfit="1">
+              <img src="assets/lookbook/items/item-02.png" alt="" />
+             <span class="item-label">look 02</span>
+            </button>
+
+            <button class="item-box" data-outfit="2">
+              <img src="assets/lookbook/items/item-03.png" alt="" />
+              <span class="item-label">look 03</span>
+            </button>
+
+            <button class="item-box" data-outfit="3">
+              <img src="assets/lookbook/items/item-04.png" alt="" />
+              <span class="item-label">look 04</span>
+            </button>
+            
+            <button class="item-box" data-outfit="4">
+              <img src="assets/lookbook/items/item-05.png" alt="" /> 
+              <span class="item-label">look 05</span>
+            </button>
+            
+            <button class="item-box" data-outfit="5">
+              <img src="assets/lookbook/items/item-06.png" alt="" />
+              <span class="item-label">look 06</span>
+            </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const unicornPaths = [
+      "assets/unicorns/unicorn-01.png",
+      "assets/unicorns/unicorn-02.png",
+      "assets/unicorns/unicorn-03.png",
+      "assets/unicorns/unicorn-04.png",
+      "assets/unicorns/unicorn-05.png",
+      "assets/unicorns/unicorn-06.png",
+      "assets/unicorns/unicorn-07.png",
+      "assets/unicorns/unicorn-08.png",
+      "assets/unicorns/unicorn-09.png",
+      "assets/unicorns/unicorn-10.png",
+      "assets/unicorns/unicorn-11.png",
+      "assets/unicorns/unicorn-12.png",
+      "assets/unicorns/unicorn-13.png",
+      "assets/unicorns/unicorn-14.png",
+      "assets/unicorns/unicorn-15.png",
+      "assets/unicorns/unicorn-16.png",
+      "assets/unicorns/unicorn-17.png"
+    ];
+
+    const unicornLayout = [
+     ["10%", "-10%", "250px", "-8deg", 2],
+      ["20%", "8%", "240px", "12deg", 0.98],
+      ["33%", "-11%", "350px", "-6deg", 1.28],
+      ["67%", "8%", "270px", "8deg", 1.9],
+     ["58%", "-5%", "230px", "-11deg", 1.38],
+      ["9%", "21%", "285px", "9deg", 1.2],
+     ["30%", "39%", "335px", "-13deg", 1.18],
+      ["60%", "38%", "280px", "6deg", 1.5],
+     ["2%", "45%", "258px", "-6deg", 0.98],
+     ["4%", "59%", "245px", "5deg", 1.28],
+     ["23%", "50%", "275px", "-7deg", 1.9],
+      ["60%", "55%", "328px", "14deg", 1.38],
+      ["20%", "50%", "180px", "-12deg", 1.2],
+     ["-2%", "35%", "250px", "6deg", 1.18],
+     ["1%", "4%", "250px", "-3deg", 1.5],
+     ["60%", "24%", "250px", "11deg", 1.2],
+     ["49%", "54%", "250px", "-10deg", 0.82]
+    ];
+
+    const field = document.getElementById("unicornField");
+
+    unicornPaths.forEach((src, index) => {
+      const img = document.createElement("img");
+      const [x, y, w, r, o] = unicornLayout[index];
+      img.src = src;
+      img.className = "unicorn";
+      img.style.setProperty("--x", x);
+      img.style.setProperty("--y", y);
+      img.style.setProperty("--w", w);
+      img.style.setProperty("--r", r);
+      img.style.setProperty("--o", o);
+      img.dataset.baseRotation = r.replace("deg", "");
+      field.appendChild(img);
+    });
+
+    let pointer = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
+window.addEventListener("pointermove", (event) => {
+  pointer.x = event.clientX;
+  pointer.y = event.clientY;
+});
+
+    function animateUnicorns() {
+      document.querySelectorAll(".unicorn").forEach((img, index) => {
+        const rect = img.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = cx - pointer.x;
+        const dy = cy - pointer.y;
+        const dist = Math.hypot(dx, dy);
+        const strength = Math.max(0, 1 - dist / 280);
+        const pushX = (dx / Math.max(dist, 1)) * strength * 18;
+        const pushY = (dy / Math.max(dist, 1)) * strength * 12;
+        const rotate = Number(img.dataset.baseRotation) + strength * 7 * (index % 2 ? -1 : 1);
+        img.style.transform = `translate3d(${pushX}px, ${pushY}px, 0) rotate(${rotate}deg)`;
+      });
+      requestAnimationFrame(animateUnicorns);
+    }
+    animateUnicorns();
+
+    // ?ㅼ?移섎턿 媛ㅻ윭由?  const sketches = [
+      { src: "assets/sketchbook/sketch-01.png", caption: "?쇰씪" },
+      { src: "assets/sketchbook/sketch-02.png", caption: "?꾨씪" },
+      { src: "assets/sketchbook/sketch-03.png", caption: "?ㅻ챸湲 03" },
+      { src: "assets/sketchbook/sketch-04.png", caption: "?ㅻ챸湲 04" },
+      { src: "assets/sketchbook/sketch-05.png", caption: "?ㅻ챸湲 05" },
+      { src: "assets/sketchbook/sketch-06.png", caption: "?ㅻ챸湲 06" },
+      { src: "assets/sketchbook/sketch-07.png", caption: "?ㅻ챸湲 07" },
+      { src: "assets/sketchbook/sketch-08.png", caption: "?ㅻ챸湲 08" },
+      { src: "assets/sketchbook/sketch-09.png", caption: "?ㅻ챸湲 09" },
+      { src: "assets/sketchbook/sketch-10.png", caption: "?ㅻ챸湲 10" }
+    ];
+
+  let sketchIndex = 0;
+
+    function renderSketch() {
+      const sketch = sketches[sketchIndex];
+      document.getElementById("sketchImage").src = sketch.src;
+      document.getElementById("sketchCaption").textContent = sketch.caption;
+    }
+
+    document.querySelectorAll(".sketch-btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        const dir = Number(button.dataset.dir);
+        sketchIndex = (sketchIndex + dir + sketches.length) % sketches.length;
+        renderSketch();
+      });
+    });
+
+  renderSketch();
+
+  // 臾대뱶?명듃 媛ㅻ윭由?    const moodNotes = [
+     "assets/mood/moodnote-01.jpg",
+     "assets/mood/moodnote-02.jpg",
+      "assets/mood/moodnote-03.jpg",
+      "assets/mood/moodnote-04.jpg",
+      "assets/mood/moodnote-05.jpg",
+      "assets/mood/moodnote-06.jpg",
+      "assets/mood/moodnote-07.jpg",
+      "assets/mood/moodnote-08.jpg",
+      "assets/mood/moodnote-09.jpg"
+    ];
+
+    let moodIndex = 0;
+    let isTurning = false;
+
+    const bookStage = document.getElementById("bookStage");
+    const moodnoteImage = document.getElementById("moodnoteImage");
+    const turnSheet = document.getElementById("turnSheet");
+
+    function showMoodNote() {
+      moodnoteImage.src = moodNotes[moodIndex];
+    }
+
+    function nextMoodNote() {
+      if (isTurning) return;
+      isTurning = true;
+
+      turnSheet.style.setProperty("--turn-image", `url("${moodNotes[moodIndex]}")`);
+      bookStage.classList.add("turn-next");
+
+      setTimeout(() => {
+        moodIndex = (moodIndex + 1) % moodNotes.length;
+        showMoodNote();
+      }, 360);
+
+      setTimeout(() => {
+        bookStage.classList.remove("turn-next");
+        isTurning = false;
+      }, 780);
+    }
+
+    function prevMoodNote() {
+      if (isTurning) return;
+
+      moodIndex = (moodIndex - 1 + moodNotes.length) % moodNotes.length;
+      showMoodNote();
+    }
+
+    document.getElementById("moodNext").addEventListener("click", nextMoodNote);
+    document.getElementById("moodPrev").addEventListener("click", prevMoodNote);
+
+    showMoodNote();
+
+    // Add real images later. Keep empty to show only rectangles.
+    const galleries = {
+      photos: {
+        index: 0,
+        images: [
+          // "assets/photos/photo-01.jpg",
+          // "assets/photos/photo-02.jpg"
+        ]
+      },
+    };
+
+    function setFrame(frameId, src) {
+      const frame = document.getElementById(frameId);
+      const img = frame.querySelector("img");
+      if (src) {
+        img.src = src;
+        frame.classList.add("has-image");
+      } else {
+        img.removeAttribute("src");
+        frame.classList.remove("has-image");
+      }
+    }
+
+    function renderGallery(name) {
+      const gallery = galleries[name];
+      const total = gallery.images.length;
+      if (!total) {
+        setFrame(`${name}PrevFrame`, "");
+        setFrame(`${name}MainFrame`, "");
+        setFrame(`${name}NextFrame`, "");
+        return;
+      }
+      const current = gallery.index;
+      const prev = (current - 1 + total) % total;
+      const next = (current + 1) % total;
+      setFrame(`${name}PrevFrame`, gallery.images[prev]);
+      setFrame(`${name}MainFrame`, gallery.images[current]);
+      setFrame(`${name}NextFrame`, gallery.images[next]);
+    }
+
+    document.querySelectorAll(".slide-btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        const name = button.dataset.gallery;
+        const dir = Number(button.dataset.dir);
+        const gallery = galleries[name];
+        if (!gallery.images.length) return;
+        gallery.index = (gallery.index + dir + gallery.images.length) % gallery.images.length;
+        renderGallery(name);
+      });
+    });
+
+    renderGallery("photos");
+
+    /* lookbook */
+    const outfits = [
+      {
+        image: "assets/lookbook/items/item-01.png",
+        memo: " look 01"
+      },
+      {
+        image: "assets/lookbook/items/item-02.png",
+        memo: "look 02"
+      },
+      {
+        image: "assets/lookbook/items/item-03.png",
+        memo: "look 03"
+      },
+      {
+        image: "assets/lookbook/items/item-04.png",
+        memo: "look 04"
+      },
+      {
+        image: "assets/lookbook/items/item-05.png",
+        memo: "look 05"
+      },
+      {
+        image: "assets/lookbook/items/item-06.png",
+        memo: "look 06"
+      }
+    ];
+
+    const outfitImage = document.getElementById("outfitImage");
+    const outfitMemo = document.getElementById("outfitMemo");
+    const itemButtons = document.querySelectorAll(".item-box");
+
+    function showOutfit(index) {
+      const outfit = outfits[index];
+
+      outfitImage.src = outfit.image;
+      outfitMemo.textContent = outfit.memo;
+
+      itemButtons.forEach((button, buttonIndex) => {
+        button.classList.toggle("is-active", buttonIndex === index);
+      });
+    }
+
+    itemButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        showOutfit(Number(button.dataset.outfit));
+      });
+    });
+
+    showOutfit(0);
+
+    const linkedPages = document.querySelectorAll(".page-section");
+    const contentsSection = document.getElementById("contents");
+
+    function openPage(pageId) {
+      linkedPages.forEach((section) => {
+        section.classList.toggle("is-active", section.id === pageId);
+      });
+
+      if (!pageId) {
+        linkedPages.forEach((section) => {
+          section.classList.remove("is-active");
+        });
+
+        return;
+      }
+
+      if (pageId === "contents") {
+        linkedPages.forEach((section) => {
+            section.classList.remove("is-active");
+            });
+
+            if (contentsSection) {
+                contentsSection.scrollIntoView({ behavior: "smooth" });
+            }
+
+          return;
+        }     
+  
+      const target = document.getElementById(pageId);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+
+    document.querySelectorAll(".contents-link").forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        const pageId = link.getAttribute("href").replace("#", "");
+        history.pushState(null, "", "#" + pageId);
+        openPage(pageId);
+      });
+    });
+
+    document.querySelectorAll(".back-to-contents").forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        history.pushState(null, "", "#contents");
+        openPage("contents");
+      });
+    });
+
+    window.addEventListener("popstate", () => {
+      openPage(window.location.hash.replace("#", ""));
+    });
+
+    openPage(window.location.hash.replace("#", ""));
+  </script>
+
+</body>
+</html>
+
+
